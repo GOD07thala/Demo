@@ -3,42 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Key Login</title>
+  <title>Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-red-400">
+<body class="bg-gradient-to-br from-purple-600 via-pink-500 to-red-400 min-h-screen flex items-center justify-center">
 
-  <div class="bg-white/10 backdrop-blur-lg shadow-xl rounded-3xl p-8 max-w-sm w-full">
-    <h2 class="text-white text-3xl font-bold text-center mb-6">🔐 Secure Login</h2>
+  <div class="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-2xl w-full max-w-sm">
+    <h2 class="text-white text-3xl font-bold text-center mb-6">🔐 Key Login</h2>
 
     <form id="loginForm" class="space-y-5">
-      <div>
-        <label for="key" class="block text-white mb-1">Enter Access Key</label>
-        <input type="text" id="key" name="key" required
-               class="w-full px-4 py-2 rounded-xl bg-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white"
-               placeholder="Enter your secret key"/>
-      </div>
+      <input type="text" id="key" placeholder="Enter Access Key" required
+        class="w-full px-4 py-2 rounded-xl bg-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white"/>
 
       <button type="submit"
-              class="w-full bg-white text-purple-700 font-bold py-2 rounded-xl hover:bg-purple-200 transition">
+        class="w-full bg-white text-purple-700 font-bold py-2 rounded-xl hover:bg-purple-100 transition">
         Login
       </button>
     </form>
 
-    <p id="errorMsg" class="text-red-200 text-sm text-center mt-4 hidden">❌ Invalid key. Try again.</p>
+    <p id="error" class="text-red-200 text-sm mt-4 text-center hidden">❌ Invalid or used key!</p>
   </div>
 
   <script>
-    const VALID_KEYS = ["god", "god", "MYSECRETKEY"]; // Replace with real secure keys
+    const VALID_KEYS = JSON.parse(localStorage.getItem('keys')) || [];
 
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
       e.preventDefault();
-      const inputKey = document.getElementById("key").value.trim();
+      const keyInput = document.getElementById('key').value.trim();
+      const index = VALID_KEYS.indexOf(keyInput);
 
-      if (VALID_KEYS.includes(inputKey)) {
-        window.location.href = "wingo.html";
+      if (index !== -1) {
+        VALID_KEYS.splice(index, 1); // One-time use
+        localStorage.setItem('keys', JSON.stringify(VALID_KEYS));
+        window.location.href = 'wingo.html';
       } else {
-        document.getElementById("errorMsg").classList.remove("hidden");
+        document.getElementById('error').classList.remove('hidden');
       }
     });
   </script>
