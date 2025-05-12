@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🔮 god demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: radial-gradient(circle, #0f172a, #1e293b);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .glow {
+      text-shadow: 0 0 8px #00ffe1, 0 0 15px #00ffe1;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 text-white">
+
+  <div class="w-full max-w-xl bg-white/10 backdrop-blur-lg p-8 rounded-3xl shadow-xl">
+    <h1 class="text-4xl font-bold mb-6 text-center glow">🔮 god demo </h1>
+
+    <div class="text-center mb-4">
+      <p id="timer" class="text-lg font-semibold text-cyan-200 mb-1">Next prediction in: 60s</p>
+      <p id="prediction" class="text-4xl font-bold text-green-300 glow">--</p>
+    </div>
+
+    <hr class="my-6 border-gray-500" />
+
+    <div>
+      <h2 class="text-xl font-semibold mb-2 text-cyan-100">📜 Prediction History</h2>
+      <ul id="history" class="space-y-2 text-sm max-h-60 overflow-y-auto">
+        <!-- History items will appear here -->
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const predictions = ['RED', 'GREEN', 'VIOLET'];
+    const timerEl = document.getElementById('timer');
+    const predictionEl = document.getElementById('prediction');
+    const historyEl = document.getElementById('history');
+    let timeLeft = 60;
+    let currentPrediction = '';
+
+    // Simulate actual result from 91 Club (mock for demo)
+    function getActualResult() {
+      // You should replace this with live fetch from 91 Club if available
+      const actuals = ['RED', 'GREEN', 'VIOLET'];
+      return actuals[Math.floor(Math.random() * actuals.length)];
+    }
+
+    function updatePrediction() {
+      currentPrediction = predictions[Math.floor(Math.random() * predictions.length)];
+      predictionEl.textContent = currentPrediction;
+
+      // After 60s, check result and store win/loss
+      setTimeout(() => {
+        const actual = getActualResult();
+        const resultText = currentPrediction === actual ? '✅ WIN' : '❌ LOSS';
+        const color = currentPrediction === actual ? 'text-green-400' : 'text-red-400';
+
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `
+          <div class="flex justify-between">
+            <span class="font-bold text-yellow-300">Predicted:</span>
+            <span>${currentPrediction}</span>
+            <span class="${color}">${resultText}</span>
+            <span class="text-cyan-300">Actual: ${actual}</span>
+          </div>
+        `;
+        historyEl.prepend(listItem);
+      }, 59000);
+    }
+
+    function startCountdown() {
+      setInterval(() => {
+        if (timeLeft <= 0) {
+          timeLeft = 60;
+          updatePrediction();
+        }
+        timerEl.textContent = `Next prediction in: ${timeLeft}s`;
+        timeLeft--;
+      }, 1000);
+    }
+
+    // First prediction on load
+    updatePrediction();
+    startCountdown();
+  </script>
+
+</body>
+</html>
