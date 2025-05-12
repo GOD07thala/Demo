@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 min-h-screen text-white flex items-center justify-center p-6">
+
+  <div class="w-full max-w-lg bg-white/10 backdrop-blur-lg p-8 rounded-xl shadow-xl space-y-6">
+    <h2 class="text-3xl font-bold text-center">🔑 Admin Panel</h2>
+
+    <form id="addKeyForm" class="flex space-x-2">
+      <input type="text" id="newKey" placeholder="Enter New Key"
+        class="flex-1 px-4 py-2 rounded-lg text-black" required />
+      <button type="submit" class="bg-green-500 px-4 py-2 rounded-lg font-bold">Add</button>
+    </form>
+
+    <ul id="keyList" class="space-y-2"></ul>
+  </div>
+
+  <script>
+    const keyList = document.getElementById('keyList');
+    const keys = JSON.parse(localStorage.getItem('keys')) || [];
+
+    function updateUI() {
+      keyList.innerHTML = '';
+      keys.forEach((key, index) => {
+        const li = document.createElement('li');
+        li.className = "flex justify-between bg-white/20 p-2 rounded-md";
+        li.innerHTML = `
+          <span>${key}</span>
+          <button onclick="removeKey(${index})" class="text-red-300 hover:text-red-500">❌</button>
+        `;
+        keyList.appendChild(li);
+      });
+    }
+
+    function removeKey(index) {
+      keys.splice(index, 1);
+      localStorage.setItem('keys', JSON.stringify(keys));
+      updateUI();
+    }
+
+    document.getElementById('addKeyForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const newKey = document.getElementById('newKey').value.trim();
+      if (newKey && !keys.includes(newKey)) {
+        keys.push(newKey);
+        localStorage.setItem('keys', JSON.stringify(keys));
+        document.getElementById('newKey').value = '';
+        updateUI();
+      }
+    });
+
+    updateUI();
+  </script>
+
+</body>
+</html>
